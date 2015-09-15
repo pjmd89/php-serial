@@ -7,6 +7,9 @@ El bloqueo viene dado por un valor NULL en el puerto serie en el momento que dej
 
 El valor de la cantidad de bloqueos a recibir puede ser definido desde el método read a fin de establecer cuantos bloqueos quiera esperar antes de retornar el valor de la cadena el mensaje. También puede que el puerto serie esté enviando un valor NULL sin necesidad de que sea el bloqueo.
 
+ADVERTENCIA
+Esta clase hace uso del comando "stty" y solo ha sido probado su funcionamiento en GNU/LINUX
+
 Ejemplo de envio de mensaje por medio de comandos AT:
 
 include 'serial.php';
