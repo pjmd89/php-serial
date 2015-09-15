@@ -29,7 +29,7 @@ $serial->write(chr(26));
 
 echo $serial->read( 4 );
 
-* Configuracion por defecto del puerto serie
+# Configuracion por defecto del puerto serie
  		Puerto: /dev/ttytAMA0
  		Baud rate: 57600
  		Data:8
