@@ -1,10 +1,3 @@
-/**
- * Clase serial para interconexión serial en linux
- * @package serial
- * @license http://opensource.org/licenses/GPL-3.0 GNU General Public License, version 3 (GPL-3.0)
- * @author Pablo Muñoz <pjmd89@gmail.com>
- */
-
 <?php
 /**
  * Establece una conexión, lee y escribe datos en un puerto serial dado.
@@ -25,6 +18,8 @@
  * 		Parity:None
  * 		Stop Bits:1
  *
+ * @license http://opensource.org/licenses/GPL-3.0 GNU General Public License, version 3 (GPL-3.0)
+ * @author Pablo Muñoz <pjmd89@gmail.com>
  * @package serial
  * @version 1.0
  * 
@@ -73,7 +68,7 @@ Class Serial{
 	 * @param int $timeout establece el tiempo en segundos de ejecución máxima del puerto serie en bloqueo. Valor por defecto: 15
 	 * @return void
 	 */
-	public function __construct( $device = '/dev/ttyAMA0' , $baud_rate = 57600 , $timeout = 15 ){
+	public function __construct( $device = '/dev/ttyAMA0' , $baud_rate = 57600 , $timeout = 5 ){
 		
 		$this->_device = $device;
 		
@@ -291,6 +286,12 @@ Class Serial{
 		
 		$return = '';
 		
+		$start = time();
+		
+		$this->_error = false;
+		
+		unset( $this->_message_error['time_out']);
+		
 		if($this->_is_opened){
 			
 			$eof = false;
@@ -299,7 +300,9 @@ Class Serial{
 			
 			$last_chr = null;
 			
-			while( ( !$eof ) && ( !$this->_stream_timeout['timed_out'] ) ){
+			while( !$eof && !$this->_error ){
+				
+				$end = time();
 				
 				$chr = fgetc($this->_handler);
 				
@@ -321,10 +324,31 @@ Class Serial{
 				}
 				
 				$return .= $chr;
+				
+				if( ( $end - $start ) >= $this->_timeout ){
+					
+					$this->_error = true;
+					
+					$this->_message_error['time_out'] = 'Timeout ('.$this->_timeout.' seconds )';
+				}
 			}
 		}
 		
 		return $return;
+	}
+	
+	/**
+	 * Devuelve el estado del puerto serie.
+	 *
+	 * Devuelve un array de dos valores, el primero, err de valor booleano,
+	 * TRUE si hay un error, de lo contrario false y message (string) contiene
+	 * el mensaje de error.
+	 *  
+	 * @return array err boolean, message string 
+	 */
+	public function state(){
+		
+		return ['err' => $this->_error, 'message'=>join( ' and ' , $this->_message_error ) ];
 	}
 }
 ?>
