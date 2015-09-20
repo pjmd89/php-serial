@@ -68,7 +68,7 @@ Class Serial{
 	 * @param int $timeout establece el tiempo en segundos de ejecución máxima del puerto serie en bloqueo. Valor por defecto: 15
 	 * @return void
 	 */
-	public function __construct( $device = '/dev/ttyAMA0' , $baud_rate = 57600 , $timeout = 5 ){
+	public function __construct( $device = '/dev/ttyAMA0' , $baud_rate = 57600 , $timeout = 15 ){
 		
 		$this->_device = $device;
 		
